@@ -1,0 +1,67 @@
+create or replace FUNCTION calculate_check_digit(p_input IN VARCHAR2)
+RETURN BOOLEAN IS
+    l_sum         NUMBER := 0;
+    l_char_value  NUMBER;
+    l_check_digit NUMBER;
+    l_digit       NUMBER := 11;
+    l_subtotal    NUMBER;
+    l_subtotal1   NUMBER;
+    l_subtotal2   NUMBER;
+    l_weight      NUMBER;
+    l_last_digit  NUMBER;
+BEGIN
+    IF LENGTH(p_input) <> 11 THEN
+        RETURN FALSE;
+    END IF;
+    l_last_digit := TO_NUMBER(SUBSTR(p_input, -1, 1));
+    FOR i IN 1 .. LENGTH(p_input) - 1 LOOP
+        DECLARE
+            l_char CHAR(1) := SUBSTR(p_input, i, 1);
+        BEGIN
+            IF l_char = 'A' THEN l_char_value := 10;
+            ELSIF l_char = 'B' THEN l_char_value := 12;
+            ELSIF l_char = 'C' THEN l_char_value := 13;
+            ELSIF l_char = 'D' THEN l_char_value := 14;
+            ELSIF l_char = 'E' THEN l_char_value := 15;
+            ELSIF l_char = 'F' THEN l_char_value := 16;
+            ELSIF l_char = 'G' THEN l_char_value := 17;
+            ELSIF l_char = 'H' THEN l_char_value := 18;
+            ELSIF l_char = 'I' THEN l_char_value := 19;
+            ELSIF l_char = 'J' THEN l_char_value := 20;
+            ELSIF l_char = 'K' THEN l_char_value := 21;
+            ELSIF l_char = 'L' THEN l_char_value := 23;
+            ELSIF l_char = 'M' THEN l_char_value := 24;
+            ELSIF l_char = 'N' THEN l_char_value := 25;
+            ELSIF l_char = 'O' THEN l_char_value := 26;
+            ELSIF l_char = 'P' THEN l_char_value := 27;
+            ELSIF l_char = 'Q' THEN l_char_value := 28;
+            ELSIF l_char = 'R' THEN l_char_value := 29;
+            ELSIF l_char = 'S' THEN l_char_value := 30;
+            ELSIF l_char = 'T' THEN l_char_value := 31;
+            ELSIF l_char = 'U' THEN l_char_value := 32;
+            ELSIF l_char = 'V' THEN l_char_value := 34;
+            ELSIF l_char = 'W' THEN l_char_value := 35;
+            ELSIF l_char = 'X' THEN l_char_value := 36;
+            ELSIF l_char = 'Y' THEN l_char_value := 37;
+            ELSIF l_char = 'Z' THEN l_char_value := 38;
+
+            ELSIF l_char BETWEEN '0' AND '9' THEN
+                l_char_value := TO_NUMBER(l_char);
+            ELSE
+                RETURN FALSE; 
+            END IF;
+            l_weight := POWER(2, i - 1);
+            l_sum := l_sum + (l_char_value * l_weight);
+        END;
+    END LOOP;
+    l_subtotal1 := l_sum / l_digit;
+    l_subtotal := TRUNC(l_subtotal1);
+    l_subtotal2 := l_subtotal * l_digit;
+    l_check_digit := l_sum - l_subtotal2;
+    IF l_check_digit = l_last_digit THEN
+        RETURN TRUE;
+    ELSE
+        RETURN FALSE;
+    END IF;
+END calculate_check_digit;
+
