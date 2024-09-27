@@ -64,4 +64,16 @@ BEGIN
         RETURN FALSE;
     END IF;
 END calculate_check_digit;
+/
 
+
+To check this code
+
+BEGIN
+    IF calculate_check_digit('CGMU2345792') THEN
+        DBMS_OUTPUT.PUT_LINE('Container number is valid');
+    ELSE
+        DBMS_OUTPUT.PUT_LINE('Container number is invalid.');
+    END IF;
+END;
+/
